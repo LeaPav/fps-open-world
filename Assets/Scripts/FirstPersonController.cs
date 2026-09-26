@@ -5,27 +5,30 @@ using UnityEngine.InputSystem;
 public class FirstPersonController : MonoBehaviour
 {
 
+    [Header("Speed parameters")]
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _sprintSpeed = 7f;
 
-    [SerializeField] private float _jumpHeight = 1.5f;
-
+    [Header("Jump parameters")]
+    [SerializeField] private float _jumpHeight = 5.5f;
     [SerializeField] private AnimationCurve _jumpCurve;
     [SerializeField] private AnimationCurve _sprintCurve;
+
+    private Vector2 _moveValue;
+    private float _currentSpeed;
+    private float _gravityValue = -9.81f;
 
     private float _jumpDuration = 0.5f;
     private float _jumpTimer;
 
-    private float _sprintRampDuration = 1.5f;
-    private float _sprintTimer;
-
-    private float _gravityValue = -9.81f;
+    private float _sprintRampDuration = 1f;
+    private float _sprintDecayDuration = 0.5f;
+    private float _sprintProgress;
 
     private InputSystem_Actions _actions;
     private CharacterController _characterController;
     private Vector3 _playerVelocity;
-    private float _currentSpeed;
-
+ 
     bool _isOnGround;
     bool _isJumping;
 
@@ -55,6 +58,8 @@ public class FirstPersonController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        _moveValue = _actions.Player.Move.ReadValue<Vector2>();
+
         CheckGrounded();
         HandlePlayerJumping();
         HandlePlayerMovemenent();
@@ -63,8 +68,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void HandlePlayerMovemenent()
     {
-        var moveValue = _actions.Player.Move.ReadValue<Vector2>();
-        var moveDirection = transform.forward * moveValue.y + transform.right * moveValue.x;
+        var moveDirection = transform.forward * _moveValue.y + transform.right * _moveValue.x;
 
         moveDirection = Vector3.ClampMagnitude(moveDirection, 1f);
 
@@ -99,17 +103,22 @@ public class FirstPersonController : MonoBehaviour
 
     private void HandlePlayerSprint()
     {
-        if (_actions.Player.Sprint.IsPressed())
+        Debug.Log(_sprintProgress);
+        Debug.Log(_currentSpeed);
+
+        if (_actions.Player.Sprint.IsPressed() && _moveValue.y > 0)
         {
-            _sprintTimer += Time.deltaTime;
-            _currentSpeed = _moveSpeed + _sprintCurve.Evaluate(_sprintTimer / _sprintRampDuration) * _sprintSpeed;
+            _sprintProgress += Time.deltaTime / _sprintRampDuration;
 
         }
         else
         {
-            _currentSpeed = _moveSpeed;
-            _sprintTimer = 0f;
+            _sprintProgress -= Time.deltaTime / _sprintDecayDuration;
         }
+
+        _sprintProgress = Mathf.Clamp01(_sprintProgress);
+
+        _currentSpeed = _moveSpeed + _sprintCurve.Evaluate(_sprintProgress) * _sprintSpeed;
     }
     private void CheckGrounded()
     {

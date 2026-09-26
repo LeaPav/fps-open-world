@@ -1,13 +1,24 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerCameraLook : MonoBehaviour
 {
 
-    [SerializeField] private float _cameraSensitivity = 100f;
+    [Header("Camera parameters")]
+    [SerializeField] private float _cameraSensitivity = 20f;
+
+    [Header("Headbob parameters")]
+    [SerializeField] private float _headbobAmplitude = 0.08f;
+    [SerializeField] private float _headbobFrequence = 8f;
+    [SerializeField] private float _headbobTimer = 0;
+    [SerializeField] private float _headbobDuration = 2f;
+
+    private CharacterController _characterController;
 
     private Camera _mainCamera;
     private Transform _mainCameraTransform;
 
+    private float _CameraLocalYPosition;
     private float _yaw;
     private float _pitch;
 
@@ -16,10 +27,11 @@ public class PlayerCameraLook : MonoBehaviour
     private void Awake()
     {
         _actions = new InputSystem_Actions();
+        _characterController = GetComponent<CharacterController>();
 
         _mainCamera = GetComponentInChildren<Camera>();
         _mainCameraTransform = _mainCamera.transform;
-  
+        _CameraLocalYPosition = _mainCameraTransform.localPosition.y;
     }
 
     private void OnEnable()
@@ -43,9 +55,10 @@ public class PlayerCameraLook : MonoBehaviour
     void Update()
     {
         HandleMouseMovement();
+        HandleHeadbobOscillation();
     }
 
-    void HandleMouseMovement()
+    private void HandleMouseMovement()
     {
         var lookValue = _actions.Player.Look.ReadValue<Vector2>();
 
@@ -55,6 +68,22 @@ public class PlayerCameraLook : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(0, _yaw, 0);
         _mainCameraTransform.localRotation = Quaternion.Euler(_pitch, 0f, 0f);
+
+    }
+
+    private void HandleHeadbobOscillation()
+    {
+
+        var moveValue = _actions.Player.Move.ReadValue<Vector2>();
+
+        if (_characterController.isGrounded && moveValue.sqrMagnitude > 0.01f)
+        {
+            _mainCameraTransform.localPosition = new Vector3(_mainCameraTransform.localPosition.x,
+                _CameraLocalYPosition + Mathf.Sin(_headbobTimer * _headbobFrequence) * _headbobAmplitude, _mainCameraTransform.localPosition.z);
+
+            _headbobTimer += Time.deltaTime;
+        }
+
 
     }
 }
