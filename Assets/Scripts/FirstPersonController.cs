@@ -4,13 +4,23 @@ using UnityEngine.InputSystem;
 public class FirstPersonController : MonoBehaviour
 {
 
-    [SerializeField] private float _moveSpeed = 15;
+    [SerializeField] private float _moveSpeed = 5f;
+    [SerializeField] private float _jumpHeight = 1.5f;
+    private float gravityValue = -9.81f;
 
     private InputSystem_Actions m_Actions;
+    private CharacterController m_characterController;
+    private Vector3 m_playerVelocity;
+
+    private RaycastHit hit;
+    bool _isOnGround;
 
     private void Awake()
     {
         m_Actions = new InputSystem_Actions();
+        m_characterController = GetComponent<CharacterController>();
+
+        _isOnGround = false;
 
     }
 
@@ -33,16 +43,42 @@ public class FirstPersonController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-      HandlePlayerMovemenent();  
+        CheckGrounded();
+        HandlePlayerJumping();
+        HandlePlayerMovemenent();  
+  
     }
-
+    private void FixedUpdate()
+    {
+   
+    }
 
     private void HandlePlayerMovemenent()
     {
         var moveValue = m_Actions.Player.Move.ReadValue<Vector2>();
         var moveDirection = transform.forward * moveValue.y + transform.right * moveValue.x;
 
-        transform.position += moveDirection * _moveSpeed * Time.deltaTime;
+        moveDirection = Vector3.ClampMagnitude(moveDirection, 1f);
+
+        var finalMove = moveDirection * _moveSpeed + transform.up * m_playerVelocity.y;
+        m_characterController.Move(finalMove * Time.deltaTime);
     }
 
+    private void HandlePlayerJumping()
+    {
+        if(_isOnGround && m_Actions.Player.Jump.WasPressedThisFrame())
+        {
+            m_playerVelocity.y = Mathf.Sqrt(_jumpHeight * -2f * gravityValue);
+        }
+
+        m_playerVelocity.y += gravityValue * Time.deltaTime;
+    }
+
+    private void CheckGrounded()
+    {
+
+        _isOnGround = m_characterController.isGrounded;
+        Debug.Log(_isOnGround);
+
+    }
 }
