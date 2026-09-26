@@ -1,52 +1,55 @@
-using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
+
 
 public class FirstPersonController : MonoBehaviour
 {
 
     [SerializeField] private float _moveSpeed = 5f;
+    [SerializeField] private float _sprintSpeed = 7f;
+
     [SerializeField] private float _jumpHeight = 1.5f;
 
     [SerializeField] private AnimationCurve _jumpCurve;
-    [SerializeField] private float _jumpDuration = 0.5f;
-    [SerializeField] private float _jumpTimer;
-    private float gravityValue = -9.81f;
+    [SerializeField] private AnimationCurve _sprintCurve;
 
-    private InputSystem_Actions m_Actions;
-    private CharacterController m_characterController;
-    private Vector3 m_playerVelocity;
+    private float _jumpDuration = 0.5f;
+    private float _jumpTimer;
+
+    private float _sprintRampDuration = 1.5f;
+    private float _sprintTimer;
+
+    private float _gravityValue = -9.81f;
+
+    private InputSystem_Actions _actions;
+    private CharacterController _characterController;
+    private Vector3 _playerVelocity;
+    private float _currentSpeed;
 
     bool _isOnGround;
-    bool _IsJumping;
+    bool _isJumping;
 
     private void Awake()
     {
-        m_Actions = new InputSystem_Actions();
-        m_characterController = GetComponent<CharacterController>();
+        _actions = new InputSystem_Actions();
+        _characterController = GetComponent<CharacterController>();
 
         _isOnGround = false;
-        _IsJumping = false;
+        _isJumping = false;
         _jumpTimer = 0f;
 
+        _currentSpeed = _moveSpeed;
 
-    }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-  
     }
 
     private void OnEnable()
     {
-        m_Actions.Player.Enable();
+        _actions.Player.Enable();
     }
 
     private void OnDisable()
     {
-        m_Actions.Player.Disable();
+        _actions.Player.Disable();
     }
 
     // Update is called once per frame
@@ -54,55 +57,62 @@ public class FirstPersonController : MonoBehaviour
     {
         CheckGrounded();
         HandlePlayerJumping();
-        HandlePlayerMovemenent();  
-  
-    }
-    private void FixedUpdate()
-    {
-   
+        HandlePlayerMovemenent();
+        HandlePlayerSprint();
     }
 
     private void HandlePlayerMovemenent()
     {
-        var moveValue = m_Actions.Player.Move.ReadValue<Vector2>();
+        var moveValue = _actions.Player.Move.ReadValue<Vector2>();
         var moveDirection = transform.forward * moveValue.y + transform.right * moveValue.x;
 
         moveDirection = Vector3.ClampMagnitude(moveDirection, 1f);
 
-        var finalMove = moveDirection * _moveSpeed + transform.up * m_playerVelocity.y;
-        m_characterController.Move(finalMove * Time.deltaTime);
+        var finalMove = moveDirection * _currentSpeed + transform.up * _playerVelocity.y;
+        _characterController.Move(finalMove * Time.deltaTime);
     }
 
     private void HandlePlayerJumping()
     {
-        if(_isOnGround && !_IsJumping && m_Actions.Player.Jump.WasPressedThisFrame())
+        if(_isOnGround && !_isJumping && _actions.Player.Jump.WasPressedThisFrame())
         {
-            _IsJumping = true;
+            _isJumping = true;
             _jumpTimer = 0f;
         }
-        if (_IsJumping)
+        if (_isJumping)
         {
             _jumpTimer += Time.deltaTime;
 
-            m_playerVelocity.y = _jumpCurve.Evaluate(_jumpTimer / _jumpDuration) * _jumpHeight;
+            _playerVelocity.y = _jumpCurve.Evaluate(_jumpTimer / _jumpDuration) * _jumpHeight;
 
             if (_jumpTimer >= _jumpDuration)
             {
-                _IsJumping = false;
+                _isJumping = false;
             }
         }
         else
         {
-            m_playerVelocity.y += gravityValue * Time.deltaTime;
+            _playerVelocity.y += _gravityValue * Time.deltaTime;
         }
 
     }
 
+    private void HandlePlayerSprint()
+    {
+        if (_actions.Player.Sprint.IsPressed())
+        {
+            _sprintTimer += Time.deltaTime;
+            _currentSpeed = _moveSpeed + _sprintCurve.Evaluate(_sprintTimer / _sprintRampDuration) * _sprintSpeed;
+
+        }
+        else
+        {
+            _currentSpeed = _moveSpeed;
+            _sprintTimer = 0f;
+        }
+    }
     private void CheckGrounded()
     {
-
-        _isOnGround = m_characterController.isGrounded;
-        Debug.Log(_isOnGround);
-
+        _isOnGround = _characterController.isGrounded;
     }
 }

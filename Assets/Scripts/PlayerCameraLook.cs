@@ -3,7 +3,6 @@ using UnityEngine;
 public class PlayerCameraLook : MonoBehaviour
 {
 
-    [SerializeField] private float _cameraSpeedRotation = 10f;
     [SerializeField] private float _cameraSensitivity = 100f;
 
     private Camera _mainCamera;
@@ -13,10 +12,10 @@ public class PlayerCameraLook : MonoBehaviour
     private float _pitch;
 
 
-    private InputSystem_Actions m_Actions;
+    private InputSystem_Actions _actions;
     private void Awake()
     {
-        m_Actions = new InputSystem_Actions();
+        _actions = new InputSystem_Actions();
 
         _mainCamera = GetComponentInChildren<Camera>();
         _mainCameraTransform = _mainCamera.transform;
@@ -25,12 +24,12 @@ public class PlayerCameraLook : MonoBehaviour
 
     private void OnEnable()
     {
-        m_Actions.Player.Enable();
+        _actions.Player.Enable();
     }
 
     private void OnDisable()
     {
-        m_Actions.Player.Disable();
+        _actions.Player.Disable();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -48,7 +47,7 @@ public class PlayerCameraLook : MonoBehaviour
 
     void HandleMouseMovement()
     {
-        var lookValue = m_Actions.Player.Look.ReadValue<Vector2>();
+        var lookValue = _actions.Player.Look.ReadValue<Vector2>();
 
         _yaw += lookValue.x * _cameraSensitivity * Time.deltaTime;
         _pitch -= lookValue.y * _cameraSensitivity * Time.deltaTime;

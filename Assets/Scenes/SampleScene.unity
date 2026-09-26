@@ -768,6 +768,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FirstPersonController
   _moveSpeed: 5
+  _sprintSpeed: 12
   _jumpHeight: 1.5
   _jumpCurve:
     serializedVersion: 2
@@ -793,8 +794,30 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _jumpDuration: 0.2
-  _jumpTimer: 0
+  _sprintCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.28094482
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!143 &1306377950
 CharacterController:
   m_ObjectHideFlags: 0
@@ -832,7 +855,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeaca58ad6559ef42aecbffe10cbf2ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCameraLook
-  _cameraSpeedRotation: 10
   _cameraSensitivity: 20
 --- !u!1 &1768682590
 GameObject:
