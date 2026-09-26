@@ -1,19 +1,25 @@
+using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 public class FirstPersonController : MonoBehaviour
 {
 
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _jumpHeight = 1.5f;
+
+    [SerializeField] private AnimationCurve _jumpCurve;
+    [SerializeField] private float _jumpDuration = 0.5f;
+    [SerializeField] private float _jumpTimer;
     private float gravityValue = -9.81f;
 
     private InputSystem_Actions m_Actions;
     private CharacterController m_characterController;
     private Vector3 m_playerVelocity;
 
-    private RaycastHit hit;
     bool _isOnGround;
+    bool _IsJumping;
 
     private void Awake()
     {
@@ -21,6 +27,9 @@ public class FirstPersonController : MonoBehaviour
         m_characterController = GetComponent<CharacterController>();
 
         _isOnGround = false;
+        _IsJumping = false;
+        _jumpTimer = 0f;
+
 
     }
 
@@ -66,12 +75,27 @@ public class FirstPersonController : MonoBehaviour
 
     private void HandlePlayerJumping()
     {
-        if(_isOnGround && m_Actions.Player.Jump.WasPressedThisFrame())
+        if(_isOnGround && !_IsJumping && m_Actions.Player.Jump.WasPressedThisFrame())
         {
-            m_playerVelocity.y = Mathf.Sqrt(_jumpHeight * -2f * gravityValue);
+            _IsJumping = true;
+            _jumpTimer = 0f;
+        }
+        if (_IsJumping)
+        {
+            _jumpTimer += Time.deltaTime;
+
+            m_playerVelocity.y = _jumpCurve.Evaluate(_jumpTimer / _jumpDuration) * _jumpHeight;
+
+            if (_jumpTimer >= _jumpDuration)
+            {
+                _IsJumping = false;
+            }
+        }
+        else
+        {
+            m_playerVelocity.y += gravityValue * Time.deltaTime;
         }
 
-        m_playerVelocity.y += gravityValue * Time.deltaTime;
     }
 
     private void CheckGrounded()
