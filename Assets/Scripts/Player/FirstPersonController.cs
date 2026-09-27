@@ -14,6 +14,9 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private AnimationCurve _jumpCurve;
     [SerializeField] private AnimationCurve _sprintCurve;
 
+    [Header("Event parameter")]
+    [SerializeField] private FloatEventChannelSO _speedChannel;
+
     private Vector2 _moveValue;
     private float _currentSpeed;
     private float _gravityValue = -9.81f;
@@ -64,6 +67,9 @@ public class FirstPersonController : MonoBehaviour
         HandlePlayerJumping();
         HandlePlayerMovemenent();
         HandlePlayerSprint();
+        Debug.Log("Source: " + _sprintProgress);
+
+        _speedChannel.Raise(_sprintProgress);
     }
 
     private void HandlePlayerMovemenent()

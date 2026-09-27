@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PlayerCameraLook : MonoBehaviour
 {
@@ -11,14 +12,18 @@ public class PlayerCameraLook : MonoBehaviour
     [SerializeField] private AnimationCurve _amplitudeCurve;
     [SerializeField] private float _headbobFrequence = 8f;
     [SerializeField] private AnimationCurve _frequenceCurve;
-    [SerializeField] private float _headbobTimer = 0;
     [SerializeField] private float _headbobDuration = 2f;
 
+    [Header("Event parameter")]
+    [SerializeField] private FloatEventChannelSO _speedChannel;
+
     private CharacterController _characterController;
+    private float _sprintProgress;
 
     private Camera _mainCamera;
     private Transform _mainCameraTransform;
 
+    private float _headbobPhase;
     private float _CameraLocalYPosition;
     private float _yaw;
     private float _pitch;
@@ -38,11 +43,13 @@ public class PlayerCameraLook : MonoBehaviour
     private void OnEnable()
     {
         _actions.Player.Enable();
+        _speedChannel.OnEventRaised += HandleSpeedChanged;
     }
 
     private void OnDisable()
     {
         _actions.Player.Disable();
+        _speedChannel.OnEventRaised -= HandleSpeedChanged;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -79,12 +86,19 @@ public class PlayerCameraLook : MonoBehaviour
 
         if (_characterController.isGrounded && moveValue.sqrMagnitude > 0.01f)
         {
+            float currentFrequence = _frequenceCurve.Evaluate(_sprintProgress) * _headbobFrequence;
+            _headbobPhase += currentFrequence * Time.deltaTime;
+
             _mainCameraTransform.localPosition = new Vector3(_mainCameraTransform.localPosition.x,
-                _CameraLocalYPosition + Mathf.Sin(_headbobTimer * _headbobFrequence) * _headbobAmplitude, _mainCameraTransform.localPosition.z);
+               _CameraLocalYPosition + Mathf.Sin(_headbobPhase) * (_amplitudeCurve.Evaluate(_sprintProgress) * _headbobAmplitude), 
+               _mainCameraTransform.localPosition.z);
 
-            _headbobTimer += Time.deltaTime;
         }
+    }
 
-
+    private void HandleSpeedChanged(float newSpeedProgress)
+    {
+        _sprintProgress = newSpeedProgress;
+        Debug.Log("Recu: " + _sprintProgress);
     }
 }
