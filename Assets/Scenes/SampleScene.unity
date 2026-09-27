@@ -1240,9 +1240,9 @@ MonoBehaviour:
       inWeight: 0.77491355
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.6475358
-      value: -0.48195836
-      inSlope: -3.8180351
+      time: 1
+      value: 0
+      inSlope: -1.3498385
       outSlope: -4.0235395
       tangentMode: 69
       weightedMode: 0
@@ -1365,6 +1365,43 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _headbobDuration: 2
+  _swayCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.4
+      value: 1
+      inSlope: 1.3817406
+      outSlope: 1.3817406
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _swayAmplitude: 0.06
+  _transitionSpeed: 10
+  _swayTimer: 0
+  _swayDuration: 2
   _speedChannel: {fileID: 11400000, guid: 8f7a97f696056bb4197c6e19a893d3d8, type: 2}
 --- !u!1 &1768682590
 GameObject:

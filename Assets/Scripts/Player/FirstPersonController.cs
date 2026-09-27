@@ -67,7 +67,6 @@ public class FirstPersonController : MonoBehaviour
         HandlePlayerJumping();
         HandlePlayerMovemenent();
         HandlePlayerSprint();
-        Debug.Log("Source: " + _sprintProgress);
 
         _speedChannel.Raise(_sprintProgress);
     }

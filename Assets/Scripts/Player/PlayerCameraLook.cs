@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -14,6 +15,13 @@ public class PlayerCameraLook : MonoBehaviour
     [SerializeField] private AnimationCurve _frequenceCurve;
     [SerializeField] private float _headbobDuration = 2f;
 
+    [Header("Sway parameters")]
+    [SerializeField] private AnimationCurve _swayCurve;
+    [SerializeField] private float _swayAmplitude = 0.02f;
+    [SerializeField] private float _transitionSpeed = 10f;
+    [SerializeField] private float _swayTimer;
+    [SerializeField] private float _swayDuration = 2f;
+
     [Header("Event parameter")]
     [SerializeField] private FloatEventChannelSO _speedChannel;
 
@@ -28,7 +36,6 @@ public class PlayerCameraLook : MonoBehaviour
     private float _yaw;
     private float _pitch;
 
-
     private InputSystem_Actions _actions;
     private void Awake()
     {
@@ -38,6 +45,8 @@ public class PlayerCameraLook : MonoBehaviour
         _mainCamera = GetComponentInChildren<Camera>();
         _mainCameraTransform = _mainCamera.transform;
         _CameraLocalYPosition = _mainCameraTransform.localPosition.y;
+
+        _swayTimer = 0f;
     }
 
     private void OnEnable()
@@ -82,23 +91,31 @@ public class PlayerCameraLook : MonoBehaviour
     private void HandleHeadbobOscillation()
     {
 
-        var moveValue = _actions.Player.Move.ReadValue<Vector2>();
+        bool isMovingNow = _characterController.velocity.sqrMagnitude > 0.01f;
 
-        if (_characterController.isGrounded && moveValue.sqrMagnitude > 0.01f)
-        {
-            float currentFrequence = _frequenceCurve.Evaluate(_sprintProgress) * _headbobFrequence;
-            _headbobPhase += currentFrequence * Time.deltaTime;
 
-            _mainCameraTransform.localPosition = new Vector3(_mainCameraTransform.localPosition.x,
-               _CameraLocalYPosition + Mathf.Sin(_headbobPhase) * (_amplitudeCurve.Evaluate(_sprintProgress) * _headbobAmplitude), 
+        // Position de headbob
+        float currentFrequence = _frequenceCurve.Evaluate(_sprintProgress) * _headbobFrequence;
+        _headbobPhase += currentFrequence * Time.deltaTime;
+        float headBobY = _CameraLocalYPosition + Mathf.Sin(_headbobPhase) * (_amplitudeCurve.Evaluate(_sprintProgress) * _headbobAmplitude);
+
+        // Position de sway
+        _swayTimer += Time.deltaTime;
+        float swayProgress = (_swayTimer % _swayDuration) / _swayDuration;
+        float swayY = _CameraLocalYPosition + _swayCurve.Evaluate(swayProgress) * _swayAmplitude;
+
+        float targetY = isMovingNow ? headBobY : swayY;
+
+        float currentY = _mainCameraTransform.localPosition.y;
+        float smoothedY = Mathf.Lerp(currentY, targetY, Time.deltaTime * _transitionSpeed);
+
+        _mainCameraTransform.localPosition = new Vector3(_mainCameraTransform.localPosition.x, smoothedY,
                _mainCameraTransform.localPosition.z);
 
-        }
     }
 
     private void HandleSpeedChanged(float newSpeedProgress)
     {
         _sprintProgress = newSpeedProgress;
-        Debug.Log("Recu: " + _sprintProgress);
     }
 }
