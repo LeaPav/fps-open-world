@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
-
 
 public class FirstPersonController : MonoBehaviour
 {
@@ -11,6 +9,7 @@ public class FirstPersonController : MonoBehaviour
 
     [Header("Jump parameters")]
     [SerializeField] private float _jumpHeight = 5.5f;
+    [SerializeField] private float _jumpDuration = 0.5f;
     [SerializeField] private AnimationCurve _jumpCurve;
     [SerializeField] private AnimationCurve _sprintCurve;
 
@@ -21,7 +20,7 @@ public class FirstPersonController : MonoBehaviour
     private float _currentSpeed;
     private float _gravityValue = -9.81f;
 
-    private float _jumpDuration = 0.5f;
+
     private float _jumpTimer;
 
     private float _sprintRampDuration = 1f;

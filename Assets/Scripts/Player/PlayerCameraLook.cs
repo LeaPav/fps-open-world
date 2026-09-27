@@ -1,6 +1,4 @@
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class PlayerCameraLook : MonoBehaviour
 {
@@ -13,7 +11,6 @@ public class PlayerCameraLook : MonoBehaviour
     [SerializeField] private AnimationCurve _amplitudeCurve;
     [SerializeField] private float _headbobFrequence = 8f;
     [SerializeField] private AnimationCurve _frequenceCurve;
-    [SerializeField] private float _headbobDuration = 2f;
 
     [Header("Sway parameters")]
     [SerializeField] private AnimationCurve _swayCurve;
