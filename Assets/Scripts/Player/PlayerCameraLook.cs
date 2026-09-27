@@ -8,7 +8,7 @@ public class PlayerCameraLook : MonoBehaviour
     [SerializeField] private float _cameraSensitivity = 20f;
 
     [Header("Headbob parameters")]
-    [SerializeField] private float _headbobAmplitude = 0.08f;
+    [SerializeField] private float _headbobAmplitude = 0.1f;
     [SerializeField] private AnimationCurve _amplitudeCurve;
     [SerializeField] private float _headbobFrequence = 8f;
     [SerializeField] private AnimationCurve _frequenceCurve;
