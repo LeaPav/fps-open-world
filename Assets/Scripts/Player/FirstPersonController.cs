@@ -103,8 +103,6 @@ public class FirstPersonController : MonoBehaviour
 
     private void HandlePlayerSprint()
     {
-        Debug.Log(_sprintProgress);
-        Debug.Log(_currentSpeed);
 
         if (_actions.Player.Sprint.IsPressed() && _moveValue.y > 0)
         {

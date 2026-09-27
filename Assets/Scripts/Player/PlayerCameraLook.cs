@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerCameraLook : MonoBehaviour
@@ -9,7 +8,9 @@ public class PlayerCameraLook : MonoBehaviour
 
     [Header("Headbob parameters")]
     [SerializeField] private float _headbobAmplitude = 0.08f;
+    [SerializeField] private AnimationCurve _amplitudeCurve;
     [SerializeField] private float _headbobFrequence = 8f;
+    [SerializeField] private AnimationCurve _frequenceCurve;
     [SerializeField] private float _headbobTimer = 0;
     [SerializeField] private float _headbobDuration = 2f;
 
