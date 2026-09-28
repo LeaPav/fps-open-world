@@ -4,7 +4,8 @@ public class PlayerCameraLook : MonoBehaviour
 {
 
     [Header("Camera parameters")]
-    [SerializeField] private float _cameraSensitivity = 20f;
+    [SerializeField] private float _cameraSensitivity = 0.2f;
+    [SerializeField] private Transform _camPivotTransform;
 
     [Header("Headbob parameters")]
     [SerializeField] private float _headbobAmplitude = 0.1f;
@@ -76,12 +77,12 @@ public class PlayerCameraLook : MonoBehaviour
     {
         var lookValue = _actions.Player.Look.ReadValue<Vector2>();
 
-        _yaw += lookValue.x * _cameraSensitivity * Time.deltaTime;
-        _pitch -= lookValue.y * _cameraSensitivity * Time.deltaTime;
+        _yaw += lookValue.x * _cameraSensitivity;
+        _pitch -= lookValue.y * _cameraSensitivity;
         _pitch = Mathf.Clamp(_pitch, -90f, 90f);
 
         transform.rotation = Quaternion.Euler(0, _yaw, 0);
-        _mainCameraTransform.localRotation = Quaternion.Euler(_pitch, 0f, 0f);
+        _camPivotTransform.localRotation = Quaternion.Euler(_pitch, 0f, 0f);
 
     }
 
