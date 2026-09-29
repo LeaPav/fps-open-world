@@ -2,8 +2,8 @@ using UnityEngine;
 
 public interface IVehicle
 {
-    void EnterVehile();
-    void ExitVehile();
+    void EnterVehicle();
+    void ExitVehicle();
 
 
     Transform GetEnterPoint();
