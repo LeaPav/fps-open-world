@@ -5,12 +5,15 @@ public class MotoVehicle : MonoBehaviour, IVehicle
     [SerializeField] private Transform _entryTransform;
     [SerializeField] private Transform _exitTransform;
 
-    private Camera _motoCamera;
-
     [SerializeField] private float _maxSpeed = 40f;
     [SerializeField] private float _acceleration = 20f;
     [SerializeField] private float _brakeForce = 40f;
     [SerializeField] private float _inertia = 5f;
+
+    [SerializeField] private float _maxSpeedRotation = 60f;
+    [SerializeField] private AnimationCurve _turnCurve;
+
+    private Camera _motoCamera;
 
     private InputSystem_Actions _actions;
     private Vector2 _moveValue;
@@ -37,7 +40,8 @@ public class MotoVehicle : MonoBehaviour, IVehicle
     {
         _moveValue = _actions.Vehicle.Move.ReadValue<Vector2>();
 
-        HandleMotocycleMovement();
+        HandleMotorcycleMovement();
+        HandleMotorcycleRotation();
     }
     public void EnterVehicle()
     {
@@ -63,7 +67,7 @@ public class MotoVehicle : MonoBehaviour, IVehicle
         return _exitTransform;
     }
 
-    private void HandleMotocycleMovement()
+    private void HandleMotorcycleMovement()
     {
         float targetSpeed;
         float rate;
@@ -87,5 +91,15 @@ public class MotoVehicle : MonoBehaviour, IVehicle
         _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, rate * Time.deltaTime);
 
         transform.position += transform.forward* _currentSpeed * Time.deltaTime;
+    }
+
+    private void HandleMotorcycleRotation()
+    {
+        
+        float speedRatio = _currentSpeed/_maxSpeed;
+        float turnFactor = _turnCurve.Evaluate(speedRatio);
+        float angle = _moveValue.x * _maxSpeedRotation * turnFactor * Time.deltaTime;
+
+        transform.Rotate(0f, angle, 0f);
     }
 }

@@ -65,6 +65,7 @@ public class VehicleStateMachine : MonoBehaviour
                 _vehicleInterface.EnterVehicle();
 
                 TeleportPlayer(_vehicleInterface.GetEnterPoint());
+                _playerTransform.SetParent(_vehicleInterface.GetEnterPoint());
 
                 _playerController.enabled = false;
                 _playerCameraLook.enabled = false;
@@ -80,6 +81,7 @@ public class VehicleStateMachine : MonoBehaviour
                 _vehicleInterface.ExitVehicle();
 
                 TeleportPlayer(_vehicleInterface.GetExitPoint());
+                _playerTransform.SetParent(null);
 
                 _playerController.enabled = true;
                 _playerCameraLook.enabled = true;
@@ -96,4 +98,6 @@ public class VehicleStateMachine : MonoBehaviour
         _playerTransform.position = destination.position;
         _characterController.enabled = true;
     }
+
+
 }
