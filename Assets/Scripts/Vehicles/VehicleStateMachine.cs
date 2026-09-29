@@ -15,14 +15,20 @@ public class VehicleStateMachine : MonoBehaviour
     private VehicleState _state;
     private IVehicle _vehicleInterface;
 
-    CharacterController _cc;
+    private CharacterController _characterController;
+    private FirstPersonController _playerController;
+    private PlayerCameraLook _playerCameraLook;
+    private Camera _playerCamera;
 
     private void Awake()
     {
         _actions = new InputSystem_Actions();
         _state = VehicleState.OnFoot;
 
-        _cc = _playerTransform.GetComponent<CharacterController>();
+        _characterController = _playerTransform.GetComponent<CharacterController>();
+        _playerController = _playerTransform.GetComponent<FirstPersonController>();
+        _playerCameraLook = _playerTransform.GetComponent<PlayerCameraLook>();
+        _playerCamera = _playerTransform.GetComponentInChildren<Camera>();
     }
     private void OnEnable()
     {
@@ -58,23 +64,36 @@ public class VehicleStateMachine : MonoBehaviour
 
                 _vehicleInterface.EnterVehicle();
 
-                _cc.enabled = false;
-                _playerTransform.localPosition = _vehicleInterface.GetEnterPoint().position;
-                _cc.enabled = true;
+                TeleportPlayer(_vehicleInterface.GetEnterPoint());
+
+                _playerController.enabled = false;
+                _playerCameraLook.enabled = false;
+                _playerCamera.enabled = false;
 
                 _state = VehicleState.Driving;
+
+
             }
             else if(_state == VehicleState.Driving)
             {
 
                 _vehicleInterface.ExitVehicle();
 
-                _cc.enabled = false;
-                _playerTransform.localPosition = _vehicleInterface.GetExitPoint().position;
-                _cc.enabled = true;
+                TeleportPlayer(_vehicleInterface.GetExitPoint());
+
+                _playerController.enabled = true;
+                _playerCameraLook.enabled = true;
+                _playerCamera.enabled = true;
 
                 _state = VehicleState.OnFoot;
             }
         }
+    }
+
+    private void TeleportPlayer(Transform destination)
+    {
+        _characterController.enabled = false;
+        _playerTransform.position = destination.position;
+        _characterController.enabled = true;
     }
 }
