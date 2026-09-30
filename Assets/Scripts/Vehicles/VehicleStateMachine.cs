@@ -65,6 +65,7 @@ public class VehicleStateMachine : MonoBehaviour
                 _vehicleInterface.EnterVehicle();
 
                 TeleportPlayer(_vehicleInterface.GetEnterPoint());
+                _characterController.enabled = false;
                 _playerTransform.SetParent(_vehicleInterface.GetEnterPoint());
 
                 _playerController.enabled = false;
