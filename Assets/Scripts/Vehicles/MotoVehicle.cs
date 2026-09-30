@@ -63,6 +63,7 @@ public class MotoVehicle : MonoBehaviour, IVehicle
         _motoCamera.enabled = false;
         enabled = false;
         _currentSpeed = 0;
+        _rigidbody.linearVelocity = Vector3.zero;
     }
 
     public Transform GetEnterPoint()
@@ -94,7 +95,9 @@ public class MotoVehicle : MonoBehaviour, IVehicle
             targetSpeed = 0;
             rate = _inertia;
         }
-        
+
+        float realForwardSpeed = Vector3.Dot(_rigidbody.linearVelocity, transform.forward);
+        _currentSpeed = Mathf.Min(_currentSpeed, Mathf.Max(0f, realForwardSpeed));
         _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, rate * Time.fixedDeltaTime);
 
         //transform.position += transform.forward* _currentSpeed * Time.fixedDeltaTime;
@@ -110,7 +113,7 @@ public class MotoVehicle : MonoBehaviour, IVehicle
         
         float speedRatio = _currentSpeed/_maxSpeed;
         float turnFactor = _turnCurve.Evaluate(speedRatio);
-        float angle = _moveValue.x * _maxSpeedRotation * turnFactor * Time.deltaTime;
+        float angle = _moveValue.x * _maxSpeedRotation * turnFactor * Time.fixedDeltaTime;
 
         //transform.Rotate(0f, angle, 0f);
         _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0f, angle, 0f));
