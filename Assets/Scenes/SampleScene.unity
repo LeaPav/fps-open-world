@@ -1345,9 +1345,11 @@ MonoBehaviour:
   _entryTransform: {fileID: 335942430}
   _exitTransform: {fileID: 662586624}
   _maxSpeed: 40
+  _backwardSpeed: -1.4
   _acceleration: 20
-  _brakeForce: 40
-  _inertia: 5
+  _reverseAcceleration: 10
+  _brakeForce: 30
+  _inertia: 2
   _maxSpeedRotation: 90
   _turnCurve:
     serializedVersion: 2

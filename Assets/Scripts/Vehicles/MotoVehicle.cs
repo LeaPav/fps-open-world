@@ -6,9 +6,11 @@ public class MotoVehicle : MonoBehaviour, IVehicle
     [SerializeField] private Transform _exitTransform;
 
     [SerializeField] private float _maxSpeed = 40f;
+    [SerializeField] private float _backwardSpeed = -1.4f;
     [SerializeField] private float _acceleration = 20f;
-    [SerializeField] private float _brakeForce = 40f;
-    [SerializeField] private float _inertia = 5f;
+    [SerializeField] private float _reverseAcceleration = 5f;
+    [SerializeField] private float _brakeForce = 30f;
+    [SerializeField] private float _inertia = 15f;
 
     [SerializeField] private float _maxSpeedRotation = 60f;
     [SerializeField] private AnimationCurve _turnCurve;
@@ -87,8 +89,16 @@ public class MotoVehicle : MonoBehaviour, IVehicle
         }
         else if(_moveValue.y < 0)
         {
-            targetSpeed = 0;
-            rate = _brakeForce;
+            if(_currentSpeed > 0)
+            {
+                targetSpeed = 0;
+                rate = _brakeForce;
+            }
+            else
+            {
+                targetSpeed = _backwardSpeed;
+                rate = _reverseAcceleration;
+            }
         }
         else
         {
@@ -97,7 +107,15 @@ public class MotoVehicle : MonoBehaviour, IVehicle
         }
 
         float realForwardSpeed = Vector3.Dot(_rigidbody.linearVelocity, transform.forward);
-        _currentSpeed = Mathf.Min(_currentSpeed, Mathf.Max(0f, realForwardSpeed));
+        if (_currentSpeed > 0)
+        {
+            _currentSpeed = Mathf.Min(_currentSpeed, Mathf.Max(0f, realForwardSpeed));
+        }
+        else
+        {
+            _currentSpeed = Mathf.Max(_currentSpeed, Mathf.Min(0f, realForwardSpeed));
+        }
+
         _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, rate * Time.fixedDeltaTime);
 
         //transform.position += transform.forward* _currentSpeed * Time.fixedDeltaTime;
@@ -106,6 +124,7 @@ public class MotoVehicle : MonoBehaviour, IVehicle
         velocity.y = _rigidbody.linearVelocity.y;
         _rigidbody.linearVelocity = velocity;
 
+        Debug.Log($"voulu {_currentSpeed} / réel {realForwardSpeed}");
     }
 
     private void HandleMotorcycleRotation()
