@@ -1,3 +1,5 @@
+using Unity.VisualScripting;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class MotoVehicle : MonoBehaviour, IVehicle
@@ -14,6 +16,19 @@ public class MotoVehicle : MonoBehaviour, IVehicle
 
     [SerializeField] private float _maxSpeedRotation = 60f;
     [SerializeField] private AnimationCurve _turnCurve;
+
+    [Header("Lean")]
+    [SerializeField] private Transform _leanPoint;
+    [SerializeField] private float _maxLeanAngle = 25f;
+    [SerializeField] private float _leanSmoothing = 7f;
+
+
+    [Header("FOV")]
+    [SerializeField] private float _minFOV = 70f;
+    [SerializeField] private float _maxFOV = 90f;
+    [SerializeField] private float _fovSmoothing = 5f;
+    private float _speedRatio;
+    private float _currentLean;
 
     private Rigidbody _rigidbody;
 
@@ -45,6 +60,9 @@ public class MotoVehicle : MonoBehaviour, IVehicle
     private void Update()
     {
         _moveValue = _actions.Vehicle.Move.ReadValue<Vector2>();
+
+        HandleLean();
+        HandleFOV();
 
     }
     private void FixedUpdate()
@@ -118,23 +136,40 @@ public class MotoVehicle : MonoBehaviour, IVehicle
 
         _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, rate * Time.fixedDeltaTime);
 
-        //transform.position += transform.forward* _currentSpeed * Time.fixedDeltaTime;
-
         Vector3 velocity = transform.forward * _currentSpeed;
         velocity.y = _rigidbody.linearVelocity.y;
         _rigidbody.linearVelocity = velocity;
 
-        Debug.Log($"voulu {_currentSpeed} / réel {realForwardSpeed}");
     }
 
     private void HandleMotorcycleRotation()
     {
-        
-        float speedRatio = _currentSpeed/_maxSpeed;
-        float turnFactor = _turnCurve.Evaluate(speedRatio);
-        float angle = _moveValue.x * _maxSpeedRotation * turnFactor * Time.fixedDeltaTime;
 
-        //transform.Rotate(0f, angle, 0f);
-        _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0f, angle, 0f));
+        float referenceSpeed = _currentSpeed >= 0 ? _maxSpeed : Mathf.Abs(_backwardSpeed);
+
+        _speedRatio = Mathf.Abs( _currentSpeed)/referenceSpeed;
+
+        float turnFactor = _turnCurve.Evaluate(_speedRatio);
+        float direction = Mathf.Sign(_currentSpeed);
+        float angle = _moveValue.x * _maxSpeedRotation * turnFactor * direction * Time.fixedDeltaTime;
+
+        if(_moveValue.y != 0)
+        {
+            _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0f, angle, 0f));
+        }
+        //_rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0f, angle, 0f));
+    }
+
+    private void HandleLean()
+    {
+        float targetLean = -_moveValue.x * _maxLeanAngle * _speedRatio;
+        _currentLean = Mathf.Lerp(_currentLean, targetLean, Time.deltaTime * _leanSmoothing);
+        _leanPoint.localRotation = Quaternion.Euler(0f, 0f, targetLean);
+    }
+
+    private void HandleFOV()
+    {
+        float targetFOV = Mathf.Lerp(_minFOV, _maxFOV, _speedRatio);
+        _motoCamera.fieldOfView = Mathf.Lerp(_motoCamera.fieldOfView, targetFOV, _fovSmoothing * Time.deltaTime);
     }
 }
