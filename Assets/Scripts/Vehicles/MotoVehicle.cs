@@ -1,5 +1,3 @@
-using Unity.VisualScripting;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class MotoVehicle : MonoBehaviour, IVehicle
@@ -12,7 +10,7 @@ public class MotoVehicle : MonoBehaviour, IVehicle
     [SerializeField] private float _acceleration = 20f;
     [SerializeField] private float _reverseAcceleration = 5f;
     [SerializeField] private float _brakeForce = 30f;
-    [SerializeField] private float _inertia = 15f;
+    [SerializeField] private float _inertia = 3f;
 
     [SerializeField] private float _maxSpeedRotation = 60f;
     [SerializeField] private AnimationCurve _turnCurve;
@@ -20,15 +18,19 @@ public class MotoVehicle : MonoBehaviour, IVehicle
     [Header("Lean")]
     [SerializeField] private Transform _leanPoint;
     [SerializeField] private float _maxLeanAngle = 25f;
-    [SerializeField] private float _leanSmoothing = 7f;
+    [SerializeField] private float _leanSmoothing = 10f;
+    [SerializeField] private float _steerSpeed = 4f;
+
 
 
     [Header("FOV")]
     [SerializeField] private float _minFOV = 70f;
-    [SerializeField] private float _maxFOV = 90f;
-    [SerializeField] private float _fovSmoothing = 5f;
+    [SerializeField] private float _maxFOV = 100f;
+    [SerializeField] private float _fovSmoothing = 7f;
+
     private float _speedRatio;
     private float _currentLean;
+    private float _steer;
 
     private Rigidbody _rigidbody;
 
@@ -60,7 +62,7 @@ public class MotoVehicle : MonoBehaviour, IVehicle
     private void Update()
     {
         _moveValue = _actions.Vehicle.Move.ReadValue<Vector2>();
-
+        _steer = Mathf.MoveTowards(_steer, _moveValue.x, _steerSpeed * Time.deltaTime);
         HandleLean();
         HandleFOV();
 
@@ -84,6 +86,8 @@ public class MotoVehicle : MonoBehaviour, IVehicle
         enabled = false;
         _currentSpeed = 0;
         _rigidbody.linearVelocity = Vector3.zero;
+        _currentLean = 0;
+        _steerSpeed = 0;
     }
 
     public Transform GetEnterPoint()
@@ -150,21 +154,16 @@ public class MotoVehicle : MonoBehaviour, IVehicle
         _speedRatio = Mathf.Abs( _currentSpeed)/referenceSpeed;
 
         float turnFactor = _turnCurve.Evaluate(_speedRatio);
-        float direction = Mathf.Sign(_currentSpeed);
-        float angle = _moveValue.x * _maxSpeedRotation * turnFactor * direction * Time.fixedDeltaTime;
+        float angle = _steer * _maxSpeedRotation * turnFactor * Time.fixedDeltaTime;
 
-        if(_moveValue.y != 0)
-        {
-            _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0f, angle, 0f));
-        }
-        //_rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0f, angle, 0f));
+        _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0f, angle, 0f));
     }
 
     private void HandleLean()
     {
-        float targetLean = -_moveValue.x * _maxLeanAngle * _speedRatio;
+        float targetLean = -_steer * _maxLeanAngle * _speedRatio;
         _currentLean = Mathf.Lerp(_currentLean, targetLean, Time.deltaTime * _leanSmoothing);
-        _leanPoint.localRotation = Quaternion.Euler(0f, 0f, targetLean);
+        _leanPoint.localRotation = Quaternion.Euler(0f, 0f, _currentLean);
     }
 
     private void HandleFOV()
