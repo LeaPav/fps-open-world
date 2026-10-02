@@ -1426,6 +1426,9 @@ MonoBehaviour:
   _minFOV: 70
   _maxFOV: 90
   _fovSmoothing: 5
+  _bounceFactor: 0.2
+  _minSpeedImpact: 0.3
+  _knockbackDecay: 8
 --- !u!54 &1043325949
 Rigidbody:
   m_ObjectHideFlags: 0

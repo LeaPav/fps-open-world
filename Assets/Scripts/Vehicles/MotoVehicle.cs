@@ -2,9 +2,11 @@ using UnityEngine;
 
 public class MotoVehicle : MonoBehaviour, IVehicle
 {
+    [Header("Transform entries")]
     [SerializeField] private Transform _entryTransform;
     [SerializeField] private Transform _exitTransform;
 
+    [Header("Driving parameters")]
     [SerializeField] private float _maxSpeed = 40f;
     [SerializeField] private float _backwardSpeed = -1.4f;
     [SerializeField] private float _acceleration = 20f;
@@ -12,7 +14,8 @@ public class MotoVehicle : MonoBehaviour, IVehicle
     [SerializeField] private float _brakeForce = 30f;
     [SerializeField] private float _inertia = 3f;
 
-    [SerializeField] private float _maxSpeedRotation = 60f;
+    [Header("Motocycle Rotation parameters")]
+    [SerializeField] private float _maxSpeedRotation = 90f;
     [SerializeField] private AnimationCurve _turnCurve;
 
     [Header("Lean")]
@@ -21,13 +24,19 @@ public class MotoVehicle : MonoBehaviour, IVehicle
     [SerializeField] private float _leanSmoothing = 10f;
     [SerializeField] private float _steerSpeed = 4f;
 
-
-
     [Header("FOV")]
     [SerializeField] private float _minFOV = 70f;
     [SerializeField] private float _maxFOV = 100f;
     [SerializeField] private float _fovSmoothing = 7f;
 
+    [Header("Collision")]
+    [SerializeField] private float _bounceFactor = 0.2f;
+    [SerializeField] private float _minSpeedImpact = 0.3f;
+    [SerializeField] private float _knockbackDecay = 8f;
+
+    private Vector3 _knockback;
+
+    private float _currentSpeed;
     private float _speedRatio;
     private float _currentLean;
     private float _steer;
@@ -38,7 +47,6 @@ public class MotoVehicle : MonoBehaviour, IVehicle
 
     private InputSystem_Actions _actions;
     private Vector2 _moveValue;
-    private float _currentSpeed;
 
     private void Awake()
     {
@@ -74,20 +82,19 @@ public class MotoVehicle : MonoBehaviour, IVehicle
     }
     public void EnterVehicle()
     {
-        Debug.Log("EnterVehicle");
         _motoCamera.enabled = true;
         enabled = true;
     }
 
     public void ExitVehicle()
     {
-        Debug.Log("ExitVehicle");
         _motoCamera.enabled = false;
         enabled = false;
         _currentSpeed = 0;
         _rigidbody.linearVelocity = Vector3.zero;
         _currentLean = 0;
-        _steerSpeed = 0;
+        _steer= 0;
+        _knockback = Vector3.zero;
     }
 
     public Transform GetEnterPoint()
@@ -140,7 +147,11 @@ public class MotoVehicle : MonoBehaviour, IVehicle
 
         _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, rate * Time.fixedDeltaTime);
 
-        Vector3 velocity = transform.forward * _currentSpeed;
+ 
+
+        _knockback = Vector3.MoveTowards(_knockback, Vector3.zero, _knockbackDecay * Time.fixedDeltaTime);
+
+        Vector3 velocity = transform.forward * _currentSpeed + _knockback;
         velocity.y = _rigidbody.linearVelocity.y;
         _rigidbody.linearVelocity = velocity;
 
@@ -170,5 +181,22 @@ public class MotoVehicle : MonoBehaviour, IVehicle
     {
         float targetFOV = Mathf.Lerp(_minFOV, _maxFOV, _speedRatio);
         _motoCamera.fieldOfView = Mathf.Lerp(_motoCamera.fieldOfView, targetFOV, _fovSmoothing * Time.deltaTime);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        float impactSpeed = collision.relativeVelocity.magnitude;
+        if (impactSpeed < _minSpeedImpact) return;
+
+        ContactPoint contactPoint = collision.GetContact(0);
+        Vector3 moveDirection = transform.forward * Mathf.Sign(_currentSpeed);
+
+        float headOn = Mathf.Clamp01(-Vector3.Dot(contactPoint.normal, moveDirection));
+
+        Vector3 pushDirection = Vector3.ProjectOnPlane(contactPoint.normal, Vector3.up).normalized;
+        _knockback = pushDirection * impactSpeed * headOn * _bounceFactor;
+
+        _currentSpeed *= 1f - headOn * 0.8f;
+
     }
 }
