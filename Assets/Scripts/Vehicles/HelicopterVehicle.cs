@@ -6,19 +6,26 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
     [SerializeField] private Transform _entryTransform;
     [SerializeField] private Transform _exitTransform;
 
-    [Header("Speed parameters")]
+    [Header("Horizontal Speed parameters")]
     [SerializeField] private float _maxHorizontalSpeed = 70f;
-    [SerializeField] private float _maxAscentSpeed = 10f;
     [SerializeField] private float _horizontalAcceleration = 35f;
     [SerializeField] private float _horizontalInertia = 20f;
+
+    [Header("Vertical Speed parameters")]
+    [SerializeField] private float _maxAscentSpeed = 10f;
     [SerializeField] private float _verticalAcceleration = 8f;
     [SerializeField] private float _verticalInertia = 12f;
 
-
     [Header("Rotation parameters")]
     [SerializeField] private float _maxAngularRotationSpeed = 60f;
-    
-    
+
+    [Header("Tilt parameters")]
+    [SerializeField] private Transform _tiltTransform;
+    [SerializeField] private float _maxPitchAngle = 20f;
+    [SerializeField] private float _maxRollAngle = 10f;
+    [SerializeField] private float _tiltSmoothing = 8f;
+
+
     private Camera _helicopterCamera;
     private InputSystem_Actions _actions;
 
@@ -30,6 +37,9 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
     private float _currentVerticalSpeed;
 
     private Rigidbody _rigidbody;
+
+    private float _currentPitch;
+    private float _currentRoll;
 
     private void Awake()
     {
@@ -59,6 +69,8 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
         _verticalValue = _actions.Helicopter.Vertical.ReadValue<float>();
         _yawValue = _actions.Helicopter.Yaw.ReadValue<float>();
         _moveValue = _actions.Helicopter.Move.ReadValue<Vector2>();
+
+        HandleTilt();
     }
 
     private void FixedUpdate()
@@ -82,6 +94,9 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
         _horizontalVelocity = Vector3.zero;
         enabled = false;
         _rigidbody.linearVelocity = Vector3.zero;
+        _tiltTransform.rotation = Quaternion.identity;
+        _currentPitch = 0;
+        _currentRoll = 0;
     }
 
     public Transform GetEnterPoint()
@@ -146,5 +161,21 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
         velocity.x = _horizontalVelocity.x; 
         velocity.z = _horizontalVelocity.z;
         _rigidbody.linearVelocity = velocity;
+    }
+
+    private void HandleTilt()
+    {
+        Vector3 localVelocity = transform.InverseTransformDirection(_horizontalVelocity);
+
+        float pitchRatio = localVelocity.z / _maxHorizontalSpeed;
+        float rollRatio  = localVelocity.x / _maxHorizontalSpeed;
+
+        float pitchAngle = pitchRatio * _maxPitchAngle;
+        float rollAngle = -rollRatio *_maxRollAngle;
+
+        _currentPitch = Mathf.Lerp(_currentPitch, pitchAngle, Time.deltaTime * _tiltSmoothing);
+        _currentRoll = Mathf.Lerp(_currentRoll, rollAngle, Time.deltaTime * _tiltSmoothing);
+
+        _tiltTransform.localRotation = Quaternion.Euler(_currentPitch, 0f, _currentRoll);
     }
 }
