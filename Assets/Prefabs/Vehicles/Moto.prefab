@@ -327,7 +327,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6331213587302978076}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: f830e1055a4813544a7bfa77f176b887, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -357,10 +357,10 @@ MonoBehaviour:
   _exitTransform: {fileID: 3018366897367536487}
   _maxSpeed: 40
   _backwardSpeed: -1.4
-  _acceleration: 20
-  _reverseAcceleration: 20
-  _brakeForce: 30
-  _inertia: 10
+  _acceleration: 15
+  _reverseAcceleration: 5
+  _brakeForce: 20
+  _inertia: 7
   _maxSpeedRotation: 90
   _turnCurve:
     serializedVersion: 2
@@ -411,7 +411,7 @@ Rigidbody:
   serializedVersion: 5
   m_Mass: 1
   m_LinearDamping: 0
-  m_AngularDamping: 0.05
+  m_AngularDamping: 5
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -427,7 +427,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 80
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &155127352580035732
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,7 +12,7 @@ public class MotoVehicle : MonoBehaviour, IVehicle
     [SerializeField] private float _acceleration = 20f;
     [SerializeField] private float _reverseAcceleration = 5f;
     [SerializeField] private float _brakeForce = 30f;
-    [SerializeField] private float _inertia = 3f;
+    [SerializeField] private float _inertia = 8f;
 
     [Header("Motocycle Rotation parameters")]
     [SerializeField] private float _maxSpeedRotation = 90f;

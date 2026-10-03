@@ -7,8 +7,10 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
     [SerializeField] private Transform _exitTransform;
 
     [Header("Speed parameters")]
-    [SerializeField] private float _maxSpeed = 70f;
+    [SerializeField] private float _maxHorizontalSpeed = 70f;
     [SerializeField] private float _maxAscentSpeed = 10f;
+    [SerializeField] private float _horizontalAcceleration = 35f;
+    [SerializeField] private float _horizontalInertia = 20f;
     [SerializeField] private float _verticalAcceleration = 8f;
     [SerializeField] private float _verticalInertia = 12f;
 
@@ -22,6 +24,8 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
 
     private float _verticalValue;
     private float _yawValue;
+    private Vector2 _moveValue;
+    private Vector3 _horizontalVelocity;
 
     private float _currentVerticalSpeed;
 
@@ -37,6 +41,8 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
         _helicopterCamera.enabled = false;
 
         _rigidbody = GetComponent<Rigidbody>();
+
+        _horizontalVelocity = Vector3.zero;
     }
 
     private void OnEnable()
@@ -52,12 +58,14 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
     {
         _verticalValue = _actions.Helicopter.Vertical.ReadValue<float>();
         _yawValue = _actions.Helicopter.Yaw.ReadValue<float>();
+        _moveValue = _actions.Helicopter.Move.ReadValue<Vector2>();
     }
 
     private void FixedUpdate()
     {
         HandleVerticalMovement();   
         HandleYaw();
+        HandleMovement();
     }
 
     public void EnterVehicle()
@@ -71,6 +79,7 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
     {
         _helicopterCamera.enabled = false;
         _currentVerticalSpeed = 0;
+        _horizontalVelocity = Vector3.zero;
         enabled = false;
         _rigidbody.linearVelocity = Vector3.zero;
     }
@@ -115,9 +124,27 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
 
     private void HandleYaw()
     {
-
         float angle = _yawValue * _maxAngularRotationSpeed * Time.fixedDeltaTime;
 
         _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0f, angle, 0f));
+    }
+
+    private void HandleMovement()
+    {
+        Vector3 target;
+        float rate;
+
+        var moveDirection = transform.forward * _moveValue.y + transform.right * _moveValue.x;
+        moveDirection = Vector3.ClampMagnitude(moveDirection, 1f);
+
+        rate = (_moveValue == Vector2.zero) ? _horizontalInertia : _horizontalAcceleration;
+        target = moveDirection * _maxHorizontalSpeed;
+
+        _horizontalVelocity = Vector3.MoveTowards(_horizontalVelocity, target, rate * Time.fixedDeltaTime);
+
+        Vector3 velocity = _rigidbody.linearVelocity;
+        velocity.x = _horizontalVelocity.x; 
+        velocity.z = _horizontalVelocity.z;
+        _rigidbody.linearVelocity = velocity;
     }
 }
