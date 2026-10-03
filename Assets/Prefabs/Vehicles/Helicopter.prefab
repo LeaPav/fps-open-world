@@ -149,6 +149,8 @@ GameObject:
   - component: {fileID: 8107122921349320918}
   - component: {fileID: 3444951703368227196}
   - component: {fileID: 2644866449946942877}
+  - component: {fileID: 3696321026403481983}
+  - component: {fileID: 4088780097731000227}
   m_Layer: 6
   m_Name: Helicopter
   m_TagString: Untagged
@@ -197,10 +199,8 @@ MonoBehaviour:
   _verticalAcceleration: 8
   _verticalInertia: 12
   _maxAngularRotationSpeed: 60
-  _tiltTransform: {fileID: 5562569095404505168}
-  _maxPitchAngle: 20
-  _maxRollAngle: 10
-  _tiltSmoothing: 8
+  _forwardSpeedRatioChannel: {fileID: 11400000, guid: 562307c3d8588e7488f4a51cb0784419, type: 2}
+  _rightwardSpeedRatioChannel: {fileID: 11400000, guid: f7697477b54fa004db99e97cec8d6b4f, type: 2}
 --- !u!54 &3444951703368227196
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -249,6 +249,54 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.2044864, y: 3.705794, z: 14.477003}
   m_Center: {x: 0.6022432, y: 0.0057479143, z: 0.19780254}
+--- !u!114 &3696321026403481983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1964811740467596469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa3de8f90ea739b4a83664151687674b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HelicopterFeedback
+  _tiltTransform: {fileID: 5562569095404505168}
+  _mainRotor: {fileID: 6672897714231588122}
+  _tailRotor: {fileID: 6003929687289569712}
+  _maxPitchAngle: 20
+  _maxRollAngle: 10
+  _tiltSmoothing: 8
+  _maxRotorSpeed: 1500
+  _idleRotorSpeed: 300
+  _tailRotorMultiplier: 1.5
+  _rotorAcceleration: 500
+  _mainRotorAxis: {x: 0, y: 1, z: 0}
+  _tailRotorAxis: {x: 1, y: 0, z: 0}
+  _forwardSpeedRatioChannel: {fileID: 11400000, guid: 562307c3d8588e7488f4a51cb0784419, type: 2}
+  _rightwardSpeedRatioChannel: {fileID: 11400000, guid: f7697477b54fa004db99e97cec8d6b4f, type: 2}
+--- !u!114 &4088780097731000227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1964811740467596469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd2be8f406c780845b000476001c9fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HelicopterCameraOrbit
+  _helicopterCamera: {fileID: 522186664962445500}
+  _targetPoint: {x: 0, y: 1, z: 0}
+  _sensitivity: 0.2
+  _minPitch: -10
+  _maxPitch: 80
+  _startDistance: 15
+  _minDistance: 5
+  _maxDistance: 30
+  _zoomSpeed: 1
+  _zoomSmoothing: 8
 --- !u!1 &5711123323007688625
 GameObject:
   m_ObjectHideFlags: 0
@@ -527,5 +575,15 @@ PrefabInstance:
 --- !u!4 &3282390666863005335 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 84aec8ff63ad94746833b71bbbd454d2, type: 3}
+  m_PrefabInstance: {fileID: 3028632914214529404}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6003929687289569712 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -480227460500092724, guid: 84aec8ff63ad94746833b71bbbd454d2, type: 3}
+  m_PrefabInstance: {fileID: 3028632914214529404}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6672897714231588122 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -676322198954566554, guid: 84aec8ff63ad94746833b71bbbd454d2, type: 3}
   m_PrefabInstance: {fileID: 3028632914214529404}
   m_PrefabAsset: {fileID: 0}

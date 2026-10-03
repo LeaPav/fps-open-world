@@ -1262,7 +1262,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": ""Zoom"",
                     ""type"": ""Value"",
                     ""id"": ""b9c2face-e6fd-44d0-84a6-95f755d8c42c"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true,
@@ -1405,7 +1405,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3537c7f4-1ab5-4780-a02e-5d7d39a63976"",
-                    ""path"": ""<Mouse>/scroll/down"",
+                    ""path"": ""<Mouse>/scroll/y"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class HelicopterVehicle : MonoBehaviour, IVehicle
 {
-    [Header("Transform references")]
+    [Header("References")]
     [SerializeField] private Transform _entryTransform;
-    [SerializeField] private Transform _exitTransform;
+    [SerializeField] private Transform _exitTransform; 
 
     [Header("Horizontal Speed parameters")]
     [SerializeField] private float _maxHorizontalSpeed = 70f;
@@ -35,13 +35,15 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
     private float _currentVerticalSpeed;
 
     private Rigidbody _rigidbody;
-
+    private HelicopterCameraOrbit _cameraOrbitScript;
 
     private void Awake()
     {
         enabled = false;
 
         _actions = new InputSystem_Actions();
+
+        _cameraOrbitScript = GetComponent<HelicopterCameraOrbit>();
 
         _helicopterCamera = GetComponentInChildren<Camera>();
         _helicopterCamera.enabled = false;
@@ -80,6 +82,8 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
     {
         _helicopterCamera.enabled = true;
         enabled = true;
+        _cameraOrbitScript.enabled = true;
+
 
     } 
 
@@ -92,6 +96,7 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
         _rigidbody.linearVelocity = Vector3.zero;
         _forwardSpeedRatioChannel.Raise(0f);
         _rightwardSpeedRatioChannel.Raise(0f);
+        _cameraOrbitScript.enabled = false;
     }
 
     public Transform GetEnterPoint()

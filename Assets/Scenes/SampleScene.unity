@@ -119,37 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &56680815 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1964811740467596469, guid: 7c9131354b6890141b1e1c4d8f607913, type: 3}
-  m_PrefabInstance: {fileID: 6120687648151670621}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &56680820
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 56680815}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa3de8f90ea739b4a83664151687674b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HelicopterFeedback
-  _tiltTransform: {fileID: 1386762033}
-  _mainRotor: {fileID: 482229549}
-  _tailRotor: {fileID: 2027931724}
-  _maxPitchAngle: 20
-  _maxRollAngle: 10
-  _tiltSmoothing: 8
-  _maxRotorSpeed: 1500
-  _idleRotorSpeed: 300
-  _tailRotorMultiplier: 1.5
-  _rotorAcceleration: 500
-  _mainRotorAxis: {x: 0, y: 1, z: 0}
-  _tailRotorAxis: {x: 1, y: 0, z: 0}
-  _forwardSpeedRatioChannel: {fileID: 11400000, guid: 562307c3d8588e7488f4a51cb0784419, type: 2}
-  _rightwardSpeedRatioChannel: {fileID: 11400000, guid: f7697477b54fa004db99e97cec8d6b4f, type: 2}
 --- !u!1 &227234328
 GameObject:
   m_ObjectHideFlags: 0
@@ -308,11 +277,6 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!4 &482229549 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6672897714231588122, guid: 7c9131354b6890141b1e1c4d8f607913, type: 3}
-  m_PrefabInstance: {fileID: 6120687648151670621}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &559589374
 GameObject:
   m_ObjectHideFlags: 0
@@ -814,11 +778,6 @@ Transform:
 Transform:
   m_CorrespondingSourceObject: {fileID: 8556816441466939857, guid: 6e8262ab3394fec49b9b383a6355f06d, type: 3}
   m_PrefabInstance: {fileID: 7712614031636258718}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1386762033 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5562569095404505168, guid: 7c9131354b6890141b1e1c4d8f607913, type: 3}
-  m_PrefabInstance: {fileID: 6120687648151670621}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1500657713
 GameObject:
@@ -1336,11 +1295,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &2027931724 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6003929687289569712, guid: 7c9131354b6890141b1e1c4d8f607913, type: 3}
-  m_PrefabInstance: {fileID: 6120687648151670621}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2084707740
 GameObject:
   m_ObjectHideFlags: 0
@@ -1664,21 +1618,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8107122921349320918, guid: 7c9131354b6890141b1e1c4d8f607913, type: 3}
-      propertyPath: _forwardSpeedRatioChannel
-      value: 
-      objectReference: {fileID: 11400000, guid: 562307c3d8588e7488f4a51cb0784419, type: 2}
-    - target: {fileID: 8107122921349320918, guid: 7c9131354b6890141b1e1c4d8f607913, type: 3}
-      propertyPath: _rightwardSpeedRatioChannel
-      value: 
-      objectReference: {fileID: 11400000, guid: f7697477b54fa004db99e97cec8d6b4f, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1964811740467596469, guid: 7c9131354b6890141b1e1c4d8f607913, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 56680820}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7c9131354b6890141b1e1c4d8f607913, type: 3}
 --- !u!1001 &7383377057843429248
 PrefabInstance:
