@@ -19,11 +19,9 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
     [Header("Rotation parameters")]
     [SerializeField] private float _maxAngularRotationSpeed = 60f;
 
-    [Header("Tilt parameters")]
-    [SerializeField] private Transform _tiltTransform;
-    [SerializeField] private float _maxPitchAngle = 20f;
-    [SerializeField] private float _maxRollAngle = 10f;
-    [SerializeField] private float _tiltSmoothing = 8f;
+    [Header("Events")]
+    [SerializeField]  private FloatEventChannelSO _forwardSpeedRatioChannel;
+    [SerializeField]  private FloatEventChannelSO _rightwardSpeedRatioChannel;
 
 
     private Camera _helicopterCamera;
@@ -38,8 +36,6 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
 
     private Rigidbody _rigidbody;
 
-    private float _currentPitch;
-    private float _currentRoll;
 
     private void Awake()
     {
@@ -70,7 +66,7 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
         _yawValue = _actions.Helicopter.Yaw.ReadValue<float>();
         _moveValue = _actions.Helicopter.Move.ReadValue<Vector2>();
 
-        HandleTilt();
+        BroadcastTiltSpeed();
     }
 
     private void FixedUpdate()
@@ -94,9 +90,8 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
         _horizontalVelocity = Vector3.zero;
         enabled = false;
         _rigidbody.linearVelocity = Vector3.zero;
-        _tiltTransform.rotation = Quaternion.identity;
-        _currentPitch = 0;
-        _currentRoll = 0;
+        _forwardSpeedRatioChannel.Raise(0f);
+        _rightwardSpeedRatioChannel.Raise(0f);
     }
 
     public Transform GetEnterPoint()
@@ -163,19 +158,15 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
         _rigidbody.linearVelocity = velocity;
     }
 
-    private void HandleTilt()
+    private void BroadcastTiltSpeed()
     {
         Vector3 localVelocity = transform.InverseTransformDirection(_horizontalVelocity);
 
-        float pitchRatio = localVelocity.z / _maxHorizontalSpeed;
-        float rollRatio  = localVelocity.x / _maxHorizontalSpeed;
+        float forwardRatio = localVelocity.z / _maxHorizontalSpeed;
+        float rightwardRatio  = localVelocity.x / _maxHorizontalSpeed;
 
-        float pitchAngle = pitchRatio * _maxPitchAngle;
-        float rollAngle = -rollRatio *_maxRollAngle;
+        _forwardSpeedRatioChannel.Raise(forwardRatio);
+        _rightwardSpeedRatioChannel.Raise(rightwardRatio);
 
-        _currentPitch = Mathf.Lerp(_currentPitch, pitchAngle, Time.deltaTime * _tiltSmoothing);
-        _currentRoll = Mathf.Lerp(_currentRoll, rollAngle, Time.deltaTime * _tiltSmoothing);
-
-        _tiltTransform.localRotation = Quaternion.Euler(_currentPitch, 0f, _currentRoll);
     }
 }
