@@ -18,27 +18,23 @@ public class MotoVehicle : MonoBehaviour, IVehicle
     [SerializeField] private float _maxSpeedRotation = 90f;
     [SerializeField] private AnimationCurve _turnCurve;
 
-    [Header("Lean")]
-    [SerializeField] private Transform _leanPoint;
-    [SerializeField] private float _maxLeanAngle = 25f;
-    [SerializeField] private float _leanSmoothing = 10f;
-    [SerializeField] private float _steerSpeed = 4f;
 
-    [Header("FOV")]
-    [SerializeField] private float _minFOV = 70f;
-    [SerializeField] private float _maxFOV = 100f;
-    [SerializeField] private float _fovSmoothing = 7f;
+    [SerializeField] private float _steerSpeed = 4f;
 
     [Header("Collision")]
     [SerializeField] private float _bounceFactor = 0.2f;
     [SerializeField] private float _minSpeedImpact = 0.3f;
     [SerializeField] private float _knockbackDecay = 8f;
 
+    [Header("Events")]
+    [SerializeField] private FloatEventChannelSO _speedRatioChannel;
+    [SerializeField] private FloatEventChannelSO _steerChannel;
+
     private Vector3 _knockback;
 
     private float _currentSpeed;
     private float _speedRatio;
-    private float _currentLean;
+
     private float _steer;
 
     private Rigidbody _rigidbody;
@@ -71,8 +67,10 @@ public class MotoVehicle : MonoBehaviour, IVehicle
     {
         _moveValue = _actions.Vehicle.Move.ReadValue<Vector2>();
         _steer = Mathf.MoveTowards(_steer, _moveValue.x, _steerSpeed * Time.deltaTime);
-        HandleLean();
-        HandleFOV();
+
+        _speedRatioChannel.Raise(_speedRatio);
+        _steerChannel.Raise(_steer);
+
 
     }
     private void FixedUpdate()
@@ -92,7 +90,9 @@ public class MotoVehicle : MonoBehaviour, IVehicle
         enabled = false;
         _currentSpeed = 0;
         _rigidbody.linearVelocity = Vector3.zero;
-        _currentLean = 0;
+        _speedRatio = 0;
+        _speedRatioChannel.Raise(0f);
+        _steerChannel.Raise(0f);
         _steer= 0;
         _knockback = Vector3.zero;
     }
@@ -168,19 +168,6 @@ public class MotoVehicle : MonoBehaviour, IVehicle
         float angle = _steer * _maxSpeedRotation * turnFactor * Time.fixedDeltaTime;
 
         _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0f, angle, 0f));
-    }
-
-    private void HandleLean()
-    {
-        float targetLean = -_steer * _maxLeanAngle * _speedRatio;
-        _currentLean = Mathf.Lerp(_currentLean, targetLean, Time.deltaTime * _leanSmoothing);
-        _leanPoint.localRotation = Quaternion.Euler(0f, 0f, _currentLean);
-    }
-
-    private void HandleFOV()
-    {
-        float targetFOV = Mathf.Lerp(_minFOV, _maxFOV, _speedRatio);
-        _motoCamera.fieldOfView = Mathf.Lerp(_motoCamera.fieldOfView, targetFOV, _fovSmoothing * Time.deltaTime);
     }
 
     private void OnCollisionEnter(Collision collision)
