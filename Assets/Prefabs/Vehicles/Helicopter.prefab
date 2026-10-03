@@ -147,6 +147,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7880437913961415446}
   - component: {fileID: 8107122921349320918}
+  - component: {fileID: 3444951703368227196}
   m_Layer: 6
   m_Name: Helicopter
   m_TagString: Untagged
@@ -187,6 +188,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HelicopterVehicle
   _entryTransform: {fileID: 540827366182095245}
   _exitTransform: {fileID: 4927910767039175131}
+  _maxSpeed: 70
+  _maxAscentSpeed: 10
+  _verticalAcceleration: 8
+  _verticalInertia: 12
+  _maxAngularRotationSpeed: 60
+--- !u!54 &3444951703368227196
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1964811740467596469}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 1
+  m_Constraints: 80
+  m_CollisionDetection: 0
 --- !u!1 &5711123323007688625
 GameObject:
   m_ObjectHideFlags: 0
