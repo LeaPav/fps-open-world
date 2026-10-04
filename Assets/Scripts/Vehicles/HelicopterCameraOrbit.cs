@@ -16,6 +16,12 @@ public class HelicopterCameraOrbit : MonoBehaviour
     [SerializeField] private float _zoomSpeed = 1f;
     [SerializeField] private float _zoomSmoothing = 8f;
 
+
+    [SerializeField] private LayerMask _obstacleMask;
+    [SerializeField] private float _radius = 0.3f;
+    [SerializeField] private float _returnSmoothing = 3f;
+    private float _displayedDistance;
+
     private float _yaw;
     private float _pitch;
 
@@ -35,6 +41,8 @@ public class HelicopterCameraOrbit : MonoBehaviour
         }
         _targetDistance = _startDistance;
         _currentDistance = _startDistance;
+
+        _displayedDistance = _startDistance;
     }
     private void OnEnable()
     {
@@ -61,7 +69,26 @@ public class HelicopterCameraOrbit : MonoBehaviour
         _currentDistance = Mathf.Lerp(_currentDistance, _targetDistance, Time.deltaTime * _zoomSmoothing);
 
         Quaternion rotation = Quaternion.Euler(_pitch, _yaw, 0f);
+
+        Vector3 worldOrigin = transform.TransformPoint(_targetPoint);
+        Vector3 worldDirection = transform.TransformDirection(-(rotation * Vector3.forward));
+
+        float allowedDistance = _currentDistance;
+        if (Physics.SphereCast(worldOrigin, _radius, worldDirection, out RaycastHit hit, _currentDistance, _obstacleMask))
+        {
+            allowedDistance = hit.distance;
+        }
+
+        if(allowedDistance < _displayedDistance)
+        {
+            _displayedDistance = allowedDistance;
+        }
+        else
+        {
+            _displayedDistance = Mathf.Lerp(_displayedDistance, allowedDistance, Time.deltaTime * _returnSmoothing);
+        }
+
         _helicopterCamera.localRotation = rotation;
-        _helicopterCamera.localPosition = _targetPoint - rotation * Vector3.forward * _currentDistance;
+        _helicopterCamera.localPosition = _targetPoint - rotation * Vector3.forward * _displayedDistance;
     }
 }

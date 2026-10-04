@@ -297,6 +297,11 @@ MonoBehaviour:
   _maxDistance: 30
   _zoomSpeed: 1
   _zoomSmoothing: 8
+  _obstacleMask:
+    serializedVersion: 2
+    m_Bits: 128
+  _radius: 1.5
+  _returnSmoothing: 3
 --- !u!1 &5711123323007688625
 GameObject:
   m_ObjectHideFlags: 0
