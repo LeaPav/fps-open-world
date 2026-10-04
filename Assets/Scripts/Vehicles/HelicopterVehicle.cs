@@ -84,7 +84,7 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
         enabled = true;
         _cameraOrbitScript.enabled = true;
 
-
+        _rigidbody.useGravity = false;
     } 
 
     public void ExitVehicle()
@@ -97,6 +97,8 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
         _forwardSpeedRatioChannel.Raise(0f);
         _rightwardSpeedRatioChannel.Raise(0f);
         _cameraOrbitScript.enabled = false;
+
+        _rigidbody.useGravity = true;
     }
 
     public Transform GetEnterPoint()
