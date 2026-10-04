@@ -1724,14 +1724,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Helicopter
       objectReference: {fileID: 0}
-    - target: {fileID: 4088780097731000227, guid: 7c9131354b6890141b1e1c4d8f607913, type: 3}
-      propertyPath: _radius
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4088780097731000227, guid: 7c9131354b6890141b1e1c4d8f607913, type: 3}
-      propertyPath: _obstacleMask.m_Bits
-      value: 128
-      objectReference: {fileID: 0}
     - target: {fileID: 7880437913961415446, guid: 7c9131354b6890141b1e1c4d8f607913, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
