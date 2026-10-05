@@ -264,7 +264,7 @@ MonoBehaviour:
   _tiltTransform: {fileID: 5562569095404505168}
   _mainRotor: {fileID: 6672897714231588122}
   _tailRotor: {fileID: 6003929687289569712}
-  _maxPitchAngle: 20
+  _maxPitchAngle: 15
   _maxRollAngle: 10
   _tiltSmoothing: 8
   _maxRotorSpeed: 1500
