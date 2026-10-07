@@ -1414,6 +1414,57 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Train"",
+            ""id"": ""7f18e608-bdfb-4aea-b0bf-d912551beea2"",
+            ""actions"": [
+                {
+                    ""name"": ""Throttle"",
+                    ""type"": ""Value"",
+                    ""id"": ""27c713aa-2cc7-43d5-8903-f4cf3bf61393"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true,
+                    ""priority"": 0
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""b5fe0f01-010e-4083-a1d9-ec47d159bfa5"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Throttle"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""9f73bc61-7ab1-47a6-85ab-c60706d2ea06"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Throttle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""c1fee579-2bb6-4536-a624-3553a2aa3025"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Throttle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -1512,6 +1563,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Helicopter_Yaw = m_Helicopter.FindAction("Yaw", throwIfNotFound: true);
         m_Helicopter_Look = m_Helicopter.FindAction("Look", throwIfNotFound: true);
         m_Helicopter_Zoom = m_Helicopter.FindAction("Zoom", throwIfNotFound: true);
+        // Train
+        m_Train = asset.FindActionMap("Train", throwIfNotFound: true);
+        m_Train_Throttle = m_Train.FindAction("Throttle", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1520,6 +1574,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, InputSystem_Actions.UI.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Vehicle.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Vehicle.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Helicopter.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Helicopter.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Train.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Train.Disable() has not been called.");
     }
 
     /// <summary>
@@ -2206,6 +2261,102 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="HelicopterActions" /> instance referencing this action map.
     /// </summary>
     public HelicopterActions @Helicopter => new HelicopterActions(this);
+
+    // Train
+    private readonly InputActionMap m_Train;
+    private List<ITrainActions> m_TrainActionsCallbackInterfaces = new List<ITrainActions>();
+    private readonly InputAction m_Train_Throttle;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "Train".
+    /// </summary>
+    public struct TrainActions
+    {
+        private @InputSystem_Actions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public TrainActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "Train/Throttle".
+        /// </summary>
+        public InputAction @Throttle => m_Wrapper.m_Train_Throttle;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_Train; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="TrainActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(TrainActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="TrainActions" />
+        public void AddCallbacks(ITrainActions instance)
+        {
+            if (instance == null || m_Wrapper.m_TrainActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_TrainActionsCallbackInterfaces.Add(instance);
+            @Throttle.started += instance.OnThrottle;
+            @Throttle.performed += instance.OnThrottle;
+            @Throttle.canceled += instance.OnThrottle;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="TrainActions" />
+        private void UnregisterCallbacks(ITrainActions instance)
+        {
+            @Throttle.started -= instance.OnThrottle;
+            @Throttle.performed -= instance.OnThrottle;
+            @Throttle.canceled -= instance.OnThrottle;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="TrainActions.UnregisterCallbacks(ITrainActions)" />.
+        /// </summary>
+        /// <seealso cref="TrainActions.UnregisterCallbacks(ITrainActions)" />
+        public void RemoveCallbacks(ITrainActions instance)
+        {
+            if (m_Wrapper.m_TrainActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="TrainActions.AddCallbacks(ITrainActions)" />
+        /// <seealso cref="TrainActions.RemoveCallbacks(ITrainActions)" />
+        /// <seealso cref="TrainActions.UnregisterCallbacks(ITrainActions)" />
+        public void SetCallbacks(ITrainActions instance)
+        {
+            foreach (var item in m_Wrapper.m_TrainActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_TrainActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="TrainActions" /> instance referencing this action map.
+    /// </summary>
+    public TrainActions @Train => new TrainActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -2477,5 +2628,20 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnZoom(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Train" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="TrainActions.AddCallbacks(ITrainActions)" />
+    /// <seealso cref="TrainActions.RemoveCallbacks(ITrainActions)" />
+    public interface ITrainActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "Throttle" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnThrottle(InputAction.CallbackContext context);
     }
 }

@@ -1328,6 +1328,57 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Train",
+            "id": "7f18e608-bdfb-4aea-b0bf-d912551beea2",
+            "actions": [
+                {
+                    "name": "Throttle",
+                    "type": "Value",
+                    "id": "27c713aa-2cc7-43d5-8903-f4cf3bf61393",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true,
+                    "priority": 0
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "1D Axis",
+                    "id": "b5fe0f01-010e-4083-a1d9-ec47d159bfa5",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Throttle",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "9f73bc61-7ab1-47a6-85ab-c60706d2ea06",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Throttle",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "c1fee579-2bb6-4536-a624-3553a2aa3025",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Throttle",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
         }
     ],
     "controlSchemes": [
