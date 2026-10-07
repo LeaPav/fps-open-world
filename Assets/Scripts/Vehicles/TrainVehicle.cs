@@ -15,6 +15,7 @@ public class TrainVehicle : MonoBehaviour, IVehicle
     [SerializeField] private SplineContainer _splineContainer;
 
     private Camera _camera;
+    private TrainCamera _trainCameraScript;
 
     private float _distanceTravelled;
     private float _currentSpeed;
@@ -35,6 +36,7 @@ public class TrainVehicle : MonoBehaviour, IVehicle
         _camera = GetComponentInChildren<Camera>();
         _trackLength = _splineContainer.CalculateLength();
         _camera.enabled = false;
+        _trainCameraScript = _camera.GetComponent<TrainCamera>();
 
         _actions = new InputSystem_Actions();
     }
@@ -54,12 +56,15 @@ public class TrainVehicle : MonoBehaviour, IVehicle
         if (_splineContainer == null) return;
         enabled = true;
         _camera.enabled = true;
+        _trainCameraScript.enabled = true;
+       
     }
 
     public void ExitVehicle()
     {
         enabled = false;
         _camera.enabled = false;
+        _trainCameraScript.enabled = false;
     }
 
     public Transform GetEnterPoint()
