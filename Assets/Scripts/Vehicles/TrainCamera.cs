@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class TrainCamera : MonoBehaviour
@@ -13,6 +14,8 @@ public class TrainCamera : MonoBehaviour
 
     private float _waitTimer;
     private bool _isWaiting;
+
+
 
     private int _fromIndex;
     private int _toIndex;
