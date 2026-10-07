@@ -4,22 +4,30 @@ using UnityEngine.Splines;
 
 public class TrainVehicle : MonoBehaviour, IVehicle
 {
+    [Header("References")]
+    [SerializeField] private Transform _entryPoint;
+    [SerializeField] private Transform _exitPoint;
+    [SerializeField] private SplineContainer _splineContainer;
 
+    [Header("Movement parameters")]
     [SerializeField] private float _maxSpeed = 30f;
     [SerializeField] private float _accelerationRate = 1.5f;
     [SerializeField] private float _brakeForce = 5f;
     [SerializeField] private float _inertia = 1f;
-    [SerializeField] private Transform _entryPoint;
-    [SerializeField] private Transform _exitPoint;
 
-    [SerializeField] private SplineContainer _splineContainer;
+    [Header("Derailment")]
+    [SerializeField] private float _derailThreshold = 200f;
+    [SerializeField] private float _lookAheadDistance = 2f;
 
     private Camera _camera;
     private TrainCamera _trainCameraScript;
+    private Rigidbody _rigidbody;
 
     private float _distanceTravelled;
     private float _currentSpeed;
     private float _trackLength;
+
+    private bool _derailed;
 
     private InputSystem_Actions _actions;
 
@@ -33,6 +41,10 @@ public class TrainVehicle : MonoBehaviour, IVehicle
             Debug.LogError("error : _splineContainer not found");
             return;
         }
+
+        _rigidbody = GetComponent<Rigidbody>();
+        _rigidbody.useGravity = false;
+
         _camera = GetComponentInChildren<Camera>();
         _trackLength = _splineContainer.CalculateLength();
         _camera.enabled = false;
@@ -53,7 +65,7 @@ public class TrainVehicle : MonoBehaviour, IVehicle
 
     public void EnterVehicle()
     {
-        if (_splineContainer == null) return;
+        if (_splineContainer == null || _rigidbody ==null) return;
         enabled = true;
         _camera.enabled = true;
         _trainCameraScript.enabled = true;
@@ -87,6 +99,8 @@ public class TrainVehicle : MonoBehaviour, IVehicle
 
     private void HandleTrainMovement()
     {
+        if (_derailed) return;
+
         float targetSpeed;
         float rate;
 
@@ -124,5 +138,33 @@ public class TrainVehicle : MonoBehaviour, IVehicle
         transform.position = position;
         transform.rotation = Quaternion.LookRotation(tangent, upVector);
 
+        CheckDerailement(t, tangent);
+
+    }
+
+    private void CheckDerailement(float t, float3 tangent)
+    {
+        if (_currentSpeed < 1f) return;
+
+        float tAhead = Mathf.Min(t + _lookAheadDistance / _trackLength, 1f);
+        _splineContainer.Evaluate(tAhead, out float3 positionAhead, out float3 tangentAhead, out float3 upAhead);
+
+        float angle = Vector3.Angle(tangent, tangentAhead);
+
+        float danger = angle * _currentSpeed;
+
+        if(danger> _derailThreshold)
+        {
+            Derail();
+        }
+    }
+
+    private void Derail()
+    {
+        _derailed = true;
+
+        _rigidbody.isKinematic = false;
+        _rigidbody.useGravity = true;
+        _rigidbody.linearVelocity = transform.forward * _currentSpeed;
     }
 }

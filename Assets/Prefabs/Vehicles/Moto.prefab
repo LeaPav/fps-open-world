@@ -360,7 +360,7 @@ MonoBehaviour:
   _acceleration: 15
   _reverseAcceleration: 5
   _brakeForce: 20
-  _inertia: 7
+  _inertia: 10
   _maxSpeedRotation: 90
   _turnCurve:
     serializedVersion: 2

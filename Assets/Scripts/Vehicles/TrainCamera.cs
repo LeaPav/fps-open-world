@@ -6,10 +6,10 @@ public class TrainCamera : MonoBehaviour
     [SerializeField] private float _timeTravelCamera = 5f;
     [SerializeField] private float _waitDuration = 3f;
     [SerializeField] private Transform _targetTransform;
+    [SerializeField] private float _lookFollowSpeed = 3;
     [SerializeField] private AnimationCurve _animationCurve;
 
     private float _travelProgress;
-    private float _travelCurve;
 
     private float _waitTimer;
     private bool _isWaiting;
@@ -21,6 +21,7 @@ public class TrainCamera : MonoBehaviour
     {
         _fromIndex = 0;
         _toIndex = 1;
+        enabled = false;
     }
 
     private void LateUpdate()
@@ -51,11 +52,13 @@ public class TrainCamera : MonoBehaviour
             }
         }
 
-        _travelCurve = _animationCurve.Evaluate(_travelProgress);
+        float curveProgress = _animationCurve.Evaluate(_travelProgress);
         transform.position = Vector3.Lerp(_cameraPositionTransforms[_fromIndex].position,
-            _cameraPositionTransforms[_toIndex].position, _travelCurve);
+            _cameraPositionTransforms[_toIndex].position, curveProgress);
 
-        transform.rotation = Quaternion.LookRotation(_targetTransform.position - transform.position);
+        Quaternion firstRotation = Quaternion.LookRotation(_targetTransform.position - transform.position);
+        transform.rotation = Quaternion.Slerp(transform.rotation, firstRotation, _lookFollowSpeed * Time.deltaTime);
+
     }
 
 }
