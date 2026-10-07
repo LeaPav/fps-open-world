@@ -16,7 +16,7 @@ public class TrainVehicle : MonoBehaviour, IVehicle
     [SerializeField] private float _inertia = 1f;
 
     [Header("Derailment")]
-    [SerializeField] private float _derailThreshold = 200f;
+    [SerializeField] private float _derailThreshold = 60f;
     [SerializeField] private float _lookAheadDistance = 2f;
 
     private Camera _camera;
@@ -44,6 +44,7 @@ public class TrainVehicle : MonoBehaviour, IVehicle
 
         _rigidbody = GetComponent<Rigidbody>();
         _rigidbody.useGravity = false;
+        _rigidbody.isKinematic = true;
 
         _camera = GetComponentInChildren<Camera>();
         _trackLength = _splineContainer.CalculateLength();
@@ -151,7 +152,7 @@ public class TrainVehicle : MonoBehaviour, IVehicle
 
         float angle = Vector3.Angle(tangent, tangentAhead);
 
-        float danger = angle * _currentSpeed;
+        float danger = (angle / _lookAheadDistance) * _currentSpeed;
 
         if(danger> _derailThreshold)
         {
