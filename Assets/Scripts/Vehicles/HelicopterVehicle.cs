@@ -22,6 +22,7 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
     [Header("Events")]
     [SerializeField]  private FloatEventChannelSO _forwardSpeedRatioChannel;
     [SerializeField]  private FloatEventChannelSO _rightwardSpeedRatioChannel;
+    [SerializeField] private BoolEventChannelSO _pilotedChannel;
 
 
     private Camera _helicopterCamera;
@@ -83,6 +84,7 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
         _helicopterCamera.enabled = true;
         enabled = true;
         _cameraOrbitScript.enabled = true;
+        _pilotedChannel.Raise(true);
 
         _rigidbody.useGravity = false;
     } 
@@ -96,6 +98,7 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
         _rigidbody.linearVelocity = Vector3.zero;
         _forwardSpeedRatioChannel.Raise(0f);
         _rightwardSpeedRatioChannel.Raise(0f);
+        _pilotedChannel.Raise(false);
         _cameraOrbitScript.enabled = false;
 
         _rigidbody.useGravity = true;

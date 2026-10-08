@@ -166,6 +166,7 @@ public class MotoVehicle : MonoBehaviour, IVehicle
 
         float turnFactor = _turnCurve.Evaluate(_speedRatio);
         float angle = _steer * _maxSpeedRotation * turnFactor * Time.fixedDeltaTime;
+        if(_currentSpeed < 0) { angle = -angle; }
 
         _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0f, angle, 0f));
     }

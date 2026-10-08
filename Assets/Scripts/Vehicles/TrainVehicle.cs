@@ -10,13 +10,13 @@ public class TrainVehicle : MonoBehaviour, IVehicle
     [SerializeField] private SplineContainer _splineContainer;
 
     [Header("Movement parameters")]
-    [SerializeField] private float _maxSpeed = 30f;
+    [SerializeField] private float _maxSpeed = 45f;
     [SerializeField] private float _accelerationRate = 1.5f;
     [SerializeField] private float _brakeForce = 5f;
     [SerializeField] private float _inertia = 1f;
 
     [Header("Derailment")]
-    [SerializeField] private float _derailThreshold = 60f;
+    [SerializeField] private float _derailThreshold = 100f;
     [SerializeField] private float _lookAheadDistance = 2f;
 
     private Camera _camera;

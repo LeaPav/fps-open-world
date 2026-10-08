@@ -23,7 +23,9 @@ public class HelicopterFeedback : MonoBehaviour
     [Header("Events")]
     [SerializeField] private FloatEventChannelSO _forwardSpeedRatioChannel;
     [SerializeField] private FloatEventChannelSO _rightwardSpeedRatioChannel;
+    [SerializeField] private BoolEventChannelSO _pilotedChannel;
 
+    private bool _isPiloted;
     private float _currentPitch;
     private float _currentRoll;
 
@@ -36,12 +38,14 @@ public class HelicopterFeedback : MonoBehaviour
     {
         _forwardSpeedRatioChannel.OnEventRaised += HandleForwardSpeedRatioChanged;
         _rightwardSpeedRatioChannel.OnEventRaised += HandleRightwardSpeedRatioChanged;
+        _pilotedChannel.OnEventRaised += HandlePilotedChannel;
     }
 
     private void OnDisable()
     {
         _forwardSpeedRatioChannel.OnEventRaised -= HandleForwardSpeedRatioChanged;
         _rightwardSpeedRatioChannel.OnEventRaised -=HandleRightwardSpeedRatioChanged;
+        _pilotedChannel.OnEventRaised -= HandlePilotedChannel;
     }
 
     void Update()
@@ -59,6 +63,11 @@ public class HelicopterFeedback : MonoBehaviour
     {
         _rollRatio = value;
     }
+
+    private void HandlePilotedChannel(bool value)
+    {
+        _isPiloted = value;
+    }
     private void HandleTilt()
     {
 
@@ -73,8 +82,11 @@ public class HelicopterFeedback : MonoBehaviour
 
     private void HandleRotorsRotation()
     {
+
         float effort = Mathf.Clamp01(new Vector2(_pitchRatio, _rollRatio).magnitude);
         float targetSpeed = _idleRotorSpeed + effort * (_maxRotorSpeed - _idleRotorSpeed);
+
+        if (!_isPiloted) { targetSpeed = 0; }
 
         _currentRotorSpeed = Mathf.MoveTowards(_currentRotorSpeed, targetSpeed, _rotorAcceleration * Time.deltaTime);
 

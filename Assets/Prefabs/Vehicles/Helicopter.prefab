@@ -201,6 +201,7 @@ MonoBehaviour:
   _maxAngularRotationSpeed: 60
   _forwardSpeedRatioChannel: {fileID: 11400000, guid: 562307c3d8588e7488f4a51cb0784419, type: 2}
   _rightwardSpeedRatioChannel: {fileID: 11400000, guid: f7697477b54fa004db99e97cec8d6b4f, type: 2}
+  _pilotedChannel: {fileID: 11400000, guid: e71baea44a1cf534fa477dc9d03617b6, type: 2}
 --- !u!54 &3444951703368227196
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -275,6 +276,7 @@ MonoBehaviour:
   _tailRotorAxis: {x: 1, y: 0, z: 0}
   _forwardSpeedRatioChannel: {fileID: 11400000, guid: 562307c3d8588e7488f4a51cb0784419, type: 2}
   _rightwardSpeedRatioChannel: {fileID: 11400000, guid: f7697477b54fa004db99e97cec8d6b4f, type: 2}
+  _pilotedChannel: {fileID: 11400000, guid: e71baea44a1cf534fa477dc9d03617b6, type: 2}
 --- !u!114 &4088780097731000227
 MonoBehaviour:
   m_ObjectHideFlags: 0
