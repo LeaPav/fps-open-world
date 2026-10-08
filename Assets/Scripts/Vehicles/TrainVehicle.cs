@@ -131,11 +131,8 @@ public class TrainVehicle : MonoBehaviour, IVehicle
         }
 
         float t = _distanceTravelled / _trackLength;
-        float3 position;
-        float3 tangent;
-        float3 upVector;
 
-        _splineContainer.Evaluate(t, out position, out tangent, out upVector);
+        _splineContainer.Evaluate(t, out float3 position , out float3 tangent, out float3 upVector);
         transform.position = position;
         transform.rotation = Quaternion.LookRotation(tangent, upVector);
 

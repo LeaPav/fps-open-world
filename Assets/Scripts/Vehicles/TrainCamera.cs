@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class TrainCamera : MonoBehaviour
@@ -59,8 +58,8 @@ public class TrainCamera : MonoBehaviour
         transform.position = Vector3.Lerp(_cameraPositionTransforms[_fromIndex].position,
             _cameraPositionTransforms[_toIndex].position, curveProgress);
 
-        Quaternion firstRotation = Quaternion.LookRotation(_targetTransform.position - transform.position);
-        transform.rotation = Quaternion.Slerp(transform.rotation, firstRotation, _lookFollowSpeed * Time.deltaTime);
+        Quaternion targetRotation = Quaternion.LookRotation(_targetTransform.position - transform.position);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _lookFollowSpeed * Time.deltaTime);
 
     }
 

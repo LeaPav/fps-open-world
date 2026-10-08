@@ -47,7 +47,7 @@ public class MotoVehicle : MonoBehaviour, IVehicle
     private void Awake()
     {
         _actions = new InputSystem_Actions();
-
+        enabled = false;
         _motoCamera = GetComponentInChildren<Camera>();
         _motoCamera.enabled = false;
 
@@ -168,7 +168,10 @@ public class MotoVehicle : MonoBehaviour, IVehicle
         float angle = _steer * _maxSpeedRotation * turnFactor * Time.fixedDeltaTime;
         if(_currentSpeed < 0) { angle = -angle; }
 
-        _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0f, angle, 0f));
+        _rigidbody.angularVelocity = Vector3.zero;
+
+        float yaw = _rigidbody.rotation.eulerAngles.y + angle;
+        _rigidbody.MoveRotation(Quaternion.Euler(0f, yaw, 0f));
     }
 
     private void OnCollisionEnter(Collision collision)

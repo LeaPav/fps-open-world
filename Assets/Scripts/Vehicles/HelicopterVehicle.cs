@@ -146,6 +146,7 @@ public class HelicopterVehicle : MonoBehaviour, IVehicle
     {
         float angle = _yawValue * _maxAngularRotationSpeed * Time.fixedDeltaTime;
 
+        _rigidbody.angularVelocity = Vector3.zero;
         _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0f, angle, 0f));
     }
 

@@ -444,8 +444,8 @@ MonoBehaviour:
   _motoCamera: {fileID: 4128735212232197382}
   _speedRatioChannel: {fileID: 11400000, guid: 8ac43232e7572ad4681bfacfa94687e7, type: 2}
   _steerChannel: {fileID: 11400000, guid: 175a85686af89e34aae567f0c1f59f3c, type: 2}
-  _maxLeanAngle: 25
-  _leanSmoothing: 10
+  _maxLeanAngle: 32
+  _leanSmoothing: 5
   _minFOV: 70
   _maxFOV: 100
   _fovSmoothing: 7
