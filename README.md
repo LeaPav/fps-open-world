@@ -30,7 +30,7 @@ An open world prototype focused on the **3 Cs: Characters, Controls, Camera**. T
 | **Train** | Spline-based movement (Unity Splines), very long acceleration and braking, **derails** if the upcoming curve is too sharp for the current speed. Cinematic camera cycling smoothly between 4 predefined positions. |
 | **City** | Procedural grid of roads and lane markings, with districts (houses or towers) chosen by Perlin noise. Reproducible through a seed. Rails are placed along the spline procedurally. |
  
-## Controls
+## 🕹️ Controls
  
 | Action | Input |
 |---|---|
@@ -79,4 +79,8 @@ Packages used: Input System 1.20, Splines 2.9, Universal RP 17.3.
 Motorcycle: https://www.turbosquid.com/FullPreview/1173447  
 Helicopter: https://www.turbosquid.com/FullPreview/1579675   
 Train: https://www.turbosquid.com/FullPreview/1085665  
-Rails: https://www.turbosquid.com/FullPreview/1860505  
+Rails: https://www.turbosquid.com/FullPreview/1860505
+
+## 🛠️ Built With
+
+![Unity](https://img.shields.io/badge/unity-%23000000.svg?style=for-the-badge&logo=unity&logoColor=white) ![C#](https://img.shields.io/badge/c%23-%23239120.svg?style=for-the-badge&logo=csharp&logoColor=white)
